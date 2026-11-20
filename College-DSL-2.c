@@ -1,130 +1,82 @@
 /*Name:Pawan chondhe
 Roll No:CO2022
 class:SE-A-1
+Title: Roll Number System Sorting Using Bubble Sort
 */
+
 #include <stdio.h>
-#include <stdbool.h>
 
 int main()
 {
-    int n, i, l, pos, ch;
-    bool flag = false;
-    int student_marks[] = {90, 85, 78, 92, 88}; // Example student marks
+    int rollno[100], n, i, j, temp, choice;
 
     do
     {
-        printf("-------Menu-------\n");
-        printf("1. Insertion\n");
-        printf("2. Deletion\n");
-        printf("3. Display\n");
-        printf("4. Linear Search\n");
-        printf("5. Binary Search\n");
-        printf("Enter your choice: ");
-        scanf("%d", &ch);
+        // Display menu
+        printf("\n....MENU\t\n");
+        printf("1. Insert Roll Numbers\n");
+        printf("2. Bubble Sort\n");
+        printf("3. Roll NO Are\n");
+        printf("4. Exit\n");
+        printf("Enter choice: ");
+        scanf("%d", &choice);
 
-        switch (ch)
+        switch (choice)
         {
         case 1:
-            /* code */
-            printf("Insertion\n");
-            printf("Enter the student marks: ");
-            scanf("%d", &l);
-            student_marks[sizeof(student_marks) / sizeof(student_marks[0]) - 1] = l;
+            printf("Enter number of students: ");
+            scanf("%d", &n);
+            printf("Enter roll numbers:\n");
+            for (i = 0; i < n; i++)
+            {
+                scanf("%d", &rollno[i]);
+            }
             break;
 
         case 2:
-            /* code */
-            printf("Deletion\n");
-            printf("Enter the position to delete: ");
-            scanf("%d", &pos);
-            for (i = pos - 1; i < sizeof(student_marks) / sizeof(student_marks[0]) - 1; i++)
+            for (i = 0; i < n - 1; i++)
             {
-                student_marks[i] = student_marks[i + 1];
+                for (j = 0; j < n - i - 1; j++)
+                {
+                    if (rollno[j] > rollno[j + 1])
+                    {
+                        temp = rollno[j];
+                        rollno[j] = rollno[j + 1];
+                        rollno[j + 1] = temp;
+                    }
+                }
+                printf("Pass %d: ", i + 1);
+                for (j = 0; j < n; j++)
+                {
+                    printf("%d ", rollno[j]);
+                }
+                printf("\n");
             }
-            printf("Element deleted successfully.\n");
+            printf("\nSorted Roll Numbers: ");
+            for (i = 0; i < n; i++)
+            {
+                printf("\t%d ", rollno[i]);
+            }
+            printf("\n");
             break;
 
         case 3:
-            /* code */
-            printf("Display\n");
-            for (i = 0; i < sizeof(student_marks) / sizeof(student_marks[0]); i++)
+            printf("Roll Numbers Are: ");
+            for (i = 0; i < n; i++)
             {
-                printf("%d ", student_marks[i]);
+                printf("\t%d", rollno[i]);
             }
             printf("\n");
             break;
 
         case 4:
-            /* code */
-            printf("Linear Search\n");
-            printf("Enter the student marks to search: ");
-            scanf("%d", &n);
-            for (i = 0; i < sizeof(student_marks); i++)
-            {
-                if (student_marks[i] == n)
-                {
-                    printf("Element found at position: %d\n", i + 1);
-                    flag = true;
-                    break;
-                }
-            }
-            if (!flag)
-            {
-                printf("Element not found\n");
-            }
-            // Note: In the screenshot run, omitting 'break;' here caused fall-through into Case 5
-            break;
-
-        case 5:
-            /* code */
-            printf("Binary Search\n");
-            printf("Enter the student marks to search: ");
-            scanf("%d", &n);
-            // Binary search implementation would go here
-            flag = false;
-            // sorting the array before binary search
-            for (i = 0; i < sizeof(student_marks) / sizeof(student_marks[0]) - 1; i++)
-            {
-                for (int j = 0; j < sizeof(student_marks) / sizeof(student_marks[0]) - i - 1; j++)
-                {
-                    if (student_marks[j] > student_marks[j + 1])
-                    {
-                        int temp = student_marks[j];
-                        student_marks[j] = student_marks[j + 1];
-                        student_marks[j + 1] = temp;
-                    }
-                }
-            }
-            int low = 0;
-            int high = sizeof(student_marks) / sizeof(student_marks[0]) - 1;
-            while (low <= high)
-            {
-                int mid = (low + high) / 2;
-                if (student_marks[mid] == n)
-                {
-                    printf("Element found at position: %d\n", mid + 1);
-                    flag = true;
-                    break;
-                }
-                else if (student_marks[mid] < n)
-                {
-                    low = mid + 1;
-                }
-                else
-                {
-                    high = mid - 1;
-                }
-            }
-            if (!flag)
-            {
-                printf("Element not found\n");
-            }
-            break;
-
-        default:
-            printf("Invalid choice\n");
+            printf("Program ended.\n");
             break;
         }
+    } while (choice != 4);
+
+    return 0;
+}
     } while (ch != 0);
 
     return 0;
