@@ -90,4 +90,106 @@ void BFS(struct Graph *graph, int startVertex)
         while (temp)
         {
             int adjUser = temp->user_id;
+            if (graph->visited[adjUser] == 0)
+            {
+                graph->visited[adjUser] = 1;
+                queue[rear++] = adjUser;
+            }
+            temp = temp->next;
+        }
+    }
+    printf("\n");
+}
+
+void DFS_recursive(struct Graph *graph, int vertex)
+{
+    struct Node *temp = graph->adjLists[vertex];
+    graph->visited[vertex] = 1;
+    printf("%d ", vertex);
+
+    while (temp != NULL)
+    {
+        int connectedUser = temp->user_id;
+        if (graph->visited[connectedUser] == 0)
+        {
+            DFS_recursive(graph, connectedUser);
+        }
+        temp = temp->next;
+    }
+}
+
+void DFS(struct Graph *graph, int startVertex)
+{
+    resetVisited(graph);
+    printf("DFS Traversal: ");
+    DFS_recursive(graph, startVertex);
+    printf("\n");
+}
+
+int main()
+{
+    int users, choice, u, v, startNode;
+
+    printf("Enter total number of users in the social network: ");
+    scanf("%d", &users);
+
+    struct Graph *graph = createGraph(users);
+
+    while (1)
+    {
+        printf("\n--- Social Network Connectivity ---\n");
+        printf("1. Add connection between users\n");
+        printf("2. Perform Breadth First Search (BFS)\n");
+        printf("3. Perform Depth First Search (DFS)\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+        case 1:
+            printf("Enter User 1 ID (0 to %d): ", users - 1);
+            scanf("%d", &u);
+            printf("Enter User 2 ID (0 to %d): ", users - 1);
+            scanf("%d", &v);
+            addConnection(graph, u, v);
+            break;
+
+        case 2:
+            printf("Enter starting user ID for BFS: ");
+            scanf("%d", &startNode);
+            if (startNode >= 0 && startNode < users)
+            {
+                BFS(graph, startNode);
+            }
+            else
+            {
+                printf("Invalid user ID.\n");
+            }
+            break;
+
+        case 3:
+            printf("Enter starting user ID for DFS: ");
+            scanf("%d", &startNode);
+            if (startNode >= 0 && startNode < users)
+            {
+                DFS(graph, startNode);
+            }
+            else
+            {
+                printf("Invalid user ID.\n");
+            }
+            break;
+
+        case 4:
+            printf("Exiting program.\n");
+            exit(0);
+
+        default:
+            printf("Invalid choice! Please try again.\n");
+        }
+    }
+
+    return 0;
+}
             if (graph->visited[adjUser]
