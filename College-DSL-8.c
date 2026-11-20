@@ -2,92 +2,131 @@
 Roll No:CO2022
 class:SE-A-1
 */
-
 #include <stdio.h>
-#include <stdlib.h>
+#define TABLE_SIZE 10
+#define EMPTY -1
 
-#define MAX_USERS 100
+int hashTable[TABLE_SIZE];
 
-struct Node
-{
-    int user_id;
-    struct Node *next;
-};
-
-struct Graph
-{
-    int numUsers;
-    struct Node **adjLists;
-    int *visited;
-};
-
-struct Node *createNode(int v)
-{
-    struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
-    newNode->user_id = v;
-    newNode->next = NULL;
-    return newNode;
-}
-
-struct Graph *createGraph(int users)
-{
-    struct Graph *graph = (struct Graph *)malloc(sizeof(struct Graph));
-    graph->numUsers = users;
-    graph->adjLists = (struct Node **)malloc(users * sizeof(struct Node *));
-    graph->visited = (int *)malloc(users * sizeof(int));
-
-    for (int i = 0; i < users; i++)
-    {
-        graph->adjLists[i] = NULL;
-        graph->visited[i] = 0;
-    }
-    return graph;
-}
-
-void addConnection(struct Graph *graph, int u, int v)
-{
-    if (u >= graph->numUsers || v >= graph->numUsers || u < 0 || v < 0)
-    {
-        printf("Invalid user IDs.\n");
-        return;
-    }
-
-    struct Node *newNode = createNode(v);
-    newNode->next = graph->adjLists[u];
-    graph->adjLists[u] = newNode;
-
-    newNode = createNode(u);
-    newNode->next = graph->adjLists[v];
-    graph->adjLists[v] = newNode;
-
-    printf("Connection added between User %d and User %d.\n", u, v);
-}
-
-void resetVisited(struct Graph *graph)
-{
-    for (int i = 0; i < graph->numUsers; i++)
-    {
-        graph->visited[i] = 0;
+// Initialize hash table
+void initialize() {
+    int i;
+    for (i = 0; i < TABLE_SIZE; i++) {
+        hashTable[i] = EMPTY;
     }
 }
 
-void BFS(struct Graph *graph, int startVertex)
-{
-    int queue[MAX_USERS];
-    int front = 0, rear = 0;
+// Insert book ID using linear probing
+void insert(int key) {
+    int index = key % TABLE_SIZE;
+    int i, pos;
 
-    resetVisited(graph);
-    graph->visited[startVertex] = 1;
-    queue[rear++] = startVertex;
+    for (i = 0; i < TABLE_SIZE; i++) {
+        pos = (index + i) % TABLE_SIZE;
 
-    printf("BFS Traversal: ");
-    while (front < rear)
-    {
-        int currentUser = queue[front++];
-        printf("%d ", currentUser);
+        if (hashTable[pos] == EMPTY) {
+            hashTable[pos] = key;
+            printf("Book ID inserted successfully.\n");
+            return;
+        }
 
-        struct Node *temp = graph->adjLists[currentUser];
-        while (temp)
+        if (hashTable[pos] == key) {
+            printf("Book ID already exists.\n");
+            return;
+        }
+    }
+
+    printf("Hash table is full.\n");
+}
+
+// Search for a book ID
+void search(int key) {
+    int index = key % TABLE_SIZE;
+    int i, pos;
+
+    for (i = 0; i < TABLE_SIZE; i++) {
+        pos = (index + i) % TABLE_SIZE;
+
+        if (hashTable[pos] == EMPTY) {
+            printf("Book ID not found.\n");
+            return;
+        }
+
+        if (hashTable[pos] == key) {
+            printf("Book ID found at position %d.\n", pos);
+            return;
+        }
+    }
+
+    printf("Book ID not found.\n");
+}
+
+// Display hash table
+void display() {
+    int i;
+
+    printf("\nHash Table:\n");
+    printf("Index\tBook ID\n");
+
+    for (i = 0; i < TABLE_SIZE; i++) {
+        if (hashTable[i] == EMPTY)
+            printf("%d\tEMPTY\n", i);
+        else
+            printf("%d\t%d\n", i, hashTable[i]);
+    }
+}
+
+int main() {
+    int choice, id;
+
+    initialize();
+
+    do {
+        printf("\n--- Library Book Indexing ---\n");
+        printf("1. Insert Book ID\n");
+        printf("2. Search Book ID\n");
+        printf("3. Display Hash Table\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter Book ID: ");
+                scanf("%d", &id);
+                if (id < 0) {
+                    printf("Book ID must be non-negative.\n");
+                } else {
+                    insert(id);
+                }
+                break;
+
+            case 2:
+                printf("Enter Book ID to search: ");
+                scanf("%d", &id);
+                if (id < 0) {
+                    printf("Book ID must be non-negative.\n");
+                } else {
+                    search(id);
+                }
+                break;
+
+            case 3:
+                display();
+                break;
+
+            case 4:
+                printf("Exiting program.\n");
+                break;
+
+            default:
+                printf("Invalid choice.\n");
+        }
+    } while (choice != 4);
+
+    Return 0;
+}
+
         {
             int adjUser = temp->user_id;
             if (graph->visited[adjUser]
