@@ -3,129 +3,232 @@ Roll No:CO2022
 class:SE-A-1
 */
 #include <stdio.h>
-#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Contact
+{
+    char name[50];
+    double phone;
+    struct Contact *next;
+};
+
+struct Contact *head = NULL;
+
+/* Insert contact at beginning */
+void insertBeginning()
+{
+    struct Contact *newNode;
+    newNode = (struct Contact *)malloc(sizeof(struct Contact));
+
+    printf("Enter name: ");
+    scanf(" %[^\n]", newNode->name);
+    printf("Enter phone number: ");
+    scanf("%lf", &newNode->phone);
+
+    newNode->next = head;
+    head = newNode;
+
+    printf("Contact inserted at beginning successfully.\n");
+}
+
+/* Insert contact at end */
+void insertEnd()
+{
+    struct Contact *newNode, *temp;
+    newNode = (struct Contact *)malloc(sizeof(struct Contact));
+
+    if (newNode == NULL)
+    {
+        printf("Memory allocation failed!\n");
+        return;
+    }
+
+    printf("Enter name: ");
+    scanf(" %[^\n]", newNode->name);
+    printf("Enter phone number: ");
+    scanf("%lf", &newNode->phone);
+
+    newNode->next = NULL;
+
+    if (head == NULL)
+    {
+        head = newNode;
+    }
+    else
+    {
+        temp = head;
+        while (temp->next != NULL)
+        {
+            temp = temp->next;
+        }
+        temp->next = newNode;
+    }
+
+    printf("Contact inserted at end successfully.\n");
+}
+
+/* Delete contact by name */
+void deleteContact()
+{
+    char name[50];
+    struct Contact *temp, *prev;
+
+    if (head == NULL)
+    {
+        printf("Contact list is empty.\n");
+        return;
+    }
+
+    printf("Enter name to delete: ");
+    scanf(" %[^\n]", name);
+
+    temp = head;
+    prev = NULL;
+
+    /* Delete first node */
+    if (strcmp(temp->name, name) == 0)
+    {
+        head = temp->next;
+        free(temp);
+        printf("Contact deleted successfully.\n");
+        return;
+    }
+
+    /* Search for contact */
+    while (temp != NULL && strcmp(temp->name, name) != 0)
+    {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    if (temp == NULL)
+    {
+        printf("Contact not found.\n");
+        return;
+    }
+
+    prev->next = temp->next;
+    free(temp);
+    printf("Contact deleted successfully.\n");
+}
+
+/* Search contact by name */
+void searchContact()
+{
+    char name[50];
+    struct Contact *temp;
+
+    if (head == NULL)
+    {
+        printf("Contact list is empty.\n");
+        return;
+    }
+
+    printf("Enter name to search: ");
+    scanf(" %[^\n]", name);
+
+    temp = head;
+    while (temp != NULL)
+    {
+        if (strcmp(temp->name, name) == 0)
+        {
+            printf("\nContact Found!\n");
+            printf("Name: %s\n", temp->name);
+            printf("Phone: %.0lf\n", temp->phone);
+            return;
+        }
+        temp = temp->next;
+    }
+
+    printf("Contact not found.\n");
+}
+
+/* Display all contacts */
+void displayContacts()
+{
+    struct Contact *temp;
+    int count = 1;
+
+    if (head == NULL)
+    {
+        printf("Contact list is empty.\n");
+        return;
+    }
+
+    temp = head;
+    printf("\n----- Contact List -----\n");
+    while (temp != NULL)
+    {
+        printf("\nContact %d\n", count);
+        printf("Name: %s\n", temp->name);
+        printf("Phone: %.0lf\n", temp->phone);
+        temp = temp->next;
+        count++;
+    }
+    printf("------------------------\n");
+}
+
+/* Free all allocated memory */
+void freeAll()
+{
+    struct Contact *temp;
+    while (head != NULL)
+    {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
 
 int main()
 {
-    int n, i, l, pos, ch;
-    bool flag = false;
-    int student_marks[] = {90, 85, 78, 92, 88}; // Example student marks
+    int choice;
 
     do
     {
-        printf("---Menu---\n");
-        printf("1. Insertion\n");
-        printf("2. Deletion\n");
-        printf("3. Display\n");
-        printf("4. Linear Search\n");
-        printf("5. Binary Search\n");
+        printf("\n===== CONTACT MANAGEMENT SYSTEM =====\n");
+        printf("1. Insert Contact at Beginning\n");
+        printf("2. Insert Contact at End\n");
+        printf("3. Delete Contact by Name\n");
+        printf("4. Search Contact by Name\n");
+        printf("5. Display All Contacts\n");
+        printf("6. Exit\n");
         printf("Enter your choice: ");
-        scanf("%d", &ch);
+        scanf("%d", &choice);
 
-        switch (ch)
+        switch (choice)
         {
         case 1:
-            /* code */
-            printf("Insertion\n");
-            printf("Enter the student marks: ");
-            scanf("%d", &l);
-            student_marks[sizeof(student_marks) / sizeof(student_marks[0]) - 1] = l;
+            insertBeginning();
             break;
 
         case 2:
-            /* code */
-            printf("Deletion\n");
-            printf("Enter the position to delete: ");
-            scanf("%d", &pos);
-            for (i = pos - 1; i < sizeof(student_marks) / sizeof(student_marks[0]) - 1; i++)
-            {
-                student_marks[i] = student_marks[i + 1];
-            }
-            printf("Element deleted successfully.\n");
+            insertEnd();
             break;
 
         case 3:
-            /* code */
-            printf("Display\n");
-            for (i = 0; i < sizeof(student_marks) / sizeof(student_marks[0]); i++)
-            {
-                printf("%d ", student_marks[i]);
-            }
-            printf("\n");
+            deleteContact();
             break;
 
         case 4:
-            /* code */
-            printf("Linear Search\n");
-            printf("Enter the student marks to search: ");
-            scanf("%d", &n);
-            for (i = 0; i < sizeof(student_marks) / sizeof(student_marks[0]); i++)
-            {
-                if (student_marks[i] == n)
-                {
-                    printf("Element found at position: %d\n", i + 1);
-                    flag = true;
-                    break;
-                }
-            }
-            if (!flag)
-            {
-                printf("Element not found\n");
-            }
-            // Note: In the screenshot run, omitting 'break;' here caused fall-through into Case 5
+            searchContact();
             break;
 
         case 5:
-            /* code */
-            printf("Binary Search\n");
-            printf("Enter the student marks to search: ");
-            scanf("%d", &n);
-            // Binary search implementation would go here
-            flag = false;
-            // sorting the array before binary search
-            for (i = 0; i < sizeof(student_marks) / sizeof(student_marks[0]) - 1; i++)
-            {
-                for (int j = 0; j < sizeof(student_marks) / sizeof(student_marks[0]) - i - 1; j++)
-                {
-                    if (student_marks[j] > student_marks[j + 1])
-                    {
-                        int temp = student_marks[j];
-                        student_marks[j] = student_marks[j + 1];
-                        student_marks[j + 1] = temp;
-                    }
-                }
-            }
-            int low = 0;
-            int high = sizeof(student_marks) / sizeof(student_marks[0]) - 1;
-            while (low <= high)
-            {
-                int mid = (low + high) / 2;
-                if (student_marks[mid] == n)
-                {
-                    printf("Element found at position: %d\n", mid + 1);
-                    flag = true;
-                    break;
-                }
-                else if (student_marks[mid] < n)
-                {
-                    low = mid + 1;
-                }
-                else
-                {
-                    high = mid - 1;
-                }
-            }
-            if (!flag)
-            {
-                printf("Element not found\n");
-            }
+            displayContacts();
+            break;
+
+        case 6:
+            freeAll();
+            printf("All allocated memory released.\n");
+            printf("Exiting program...\n");
             break;
 
         default:
-            printf("Invalid choice\n");
-            break;
+            printf("Invalid choice! Please try again.\n");
         }
-    } while (ch != 0);
+    } while (choice != 6);
 
     return 0;
 }
