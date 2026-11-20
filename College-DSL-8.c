@@ -126,7 +126,3 @@ int main() {
 
     Return 0;
 }
-
-        {
-            int adjUser = temp->user_id;
-            if (graph->visited[adjUser]
